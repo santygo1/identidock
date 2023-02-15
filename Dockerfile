@@ -1,17 +1,28 @@
 # Ищем подходящий image
-FROM python:3.4
+FROM python:3.5
+
+# Создаем пользователя в UNIX 
+RUN groupadd -r uwsgi && useradd -r -g uwsgi uwsgi
+
+# Устанавливаем плагин для сборки wheel uWSGI	
+RUN apt-get update && apt-get install -y uwsgi-plugin-python3  
 
 #Устанавливаем Flask и uWSGI
-RUN pip install Flask==0.10.1 uWSGI==2.0.8
+RUN pip install Flask uWSGI
 
 # Определяем рабочую директорию в контейнере
-WORKDIR ./app
+WORKDIR /app
 
 # Копируем файлы с хоста в контейнер
 COPY app /app
+#Копируем скрипт в контейнер
+COPY cmd.sh /
+
+# Говорим, что хотим открыть порты 9090 9191
+EXPOSE 9090 9191
+
+# Определяем юзера для всех следующих строк(в том числе CMD и ENTRYPOINT)
+USER uwsgi
 
 # Запускаем проект
-CMD ["uwsgi", "--http", "0.0.0.0:9090",\
-	 "--wsgi-file", "/app/identidock.py", \
-	"--callable", "app", \
-	"--stats", "0.0.0.0:9191"]
+CMD ["/cmd.sh"]
