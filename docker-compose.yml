@@ -8,3 +8,11 @@ services:
       ENV: DEV
     volumes:
       - ./app:/app
+    links:
+      - dnmonster
+
+  dnmonster:
+    image: amouat/dnmonster:1.0
+
+  redis:
+    image: redis:3.0

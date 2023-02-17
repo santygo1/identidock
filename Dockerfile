@@ -8,7 +8,7 @@ RUN groupadd -r uwsgi && useradd -r -g uwsgi uwsgi
 RUN apt-get update && apt-get install -y uwsgi-plugin-python3  
 
 #Устанавливаем Flask и uWSGI
-RUN pip install Flask uWSGI
+RUN pip install Flask uWSGI requests==2.5.1 redis
 
 # Определяем рабочую директорию в контейнере
 WORKDIR /app
